@@ -10,3 +10,5 @@ def hello_word(request):
     return JsonResponse({'text':'hello world'})
 
     #return Response('Hello World', status=status.HTTP_200_OK)
+
+
