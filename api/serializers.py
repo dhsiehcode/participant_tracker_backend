@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Participant, Experiment, ParticipantExperiment, Resercher
+from .models import Participant, Experiment, ParticipantExperiment, Researcher
 
 
 class ParticipantSeriaizer(serializers.ModelSerializer):
@@ -31,6 +31,6 @@ class ParticpantExperimentSerializer(serializers.ModelSerializer):
 class ResearcherSeializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Resercher
+        model = Researcher
         fields = ('id', 'first_name', 'last_name', 'start_date', 'end_date')
 
