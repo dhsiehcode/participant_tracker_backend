@@ -24,12 +24,6 @@ urlpatterns = [
     path('participant/', views.add_participant),
     path('participation/', views.add_participation),
 
-
-    ## gets reports
-    path('filter_experiment/<int:id>/<data_collection>/', views.filter_experiment),
-    path('filter_experiment/<int:id>/', views.filter_experiment),
-    path('filter_participant/<int:id>/<data_collection>/', views.filter_participant),
-    path('filter_participant/<int:id>/', views.filter_participant),
     path('filter_by_date_researcher/', views.get_experiments_with_date_and_researcher),
     path('get_report/', views.get_report)
 ]

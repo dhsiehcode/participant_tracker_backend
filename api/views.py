@@ -87,37 +87,28 @@ def edit_participation(request, id):
 
         participation = ParticipantExperiment.objects.get(id = id)
 
-        '''
-        try:
-            collect_data = request.data['collect_data']
-        except KeyError:
-            collect_data = participation.collect_data
-
-        try:
-            experiment_date = request.data['experiment_date']
-        except KeyError:
-            experiment_date = participation.experiment_date
-
-        try:
-            location = request.data['location']
-        except KeyError:
-            location = participation.location
-        '''
-        
         collect_data = request.data['collect_data']
         experiment_date = request.data['experiment_date']
         location = request.data['location']
 
-        if not collect_data == '':
-            participation.collect_data = collect_data
+        if collect_data == '':
+            collect_data = participation.collect_data
+        else:
+            if collect_data == 'True' or collect_data == 'true':
+                collect_data = 1
+            else:
+                collect_data = 0
 
-        if not experiment_date == '':
-            participation.experiment_date = experiment_date
+        if experiment_date == '':
+            experiment_date = participation.experiment_date
 
-        if not location == '':
-            participation.location = location
+        if location == '':
+            location = participation.location
 
-        participation.save()
+        with connection.cursor() as cursor:
+
+            cursor.execute("UPDATE participant_experiment SET collect_data = %s, experiment_date = %s, location = %s WHERE id = %s", 
+                           [collect_data, experiment_date, location, id])
 
     except:
         return Response(status=status.HTTP_304_NOT_MODIFIED)
@@ -176,19 +167,10 @@ def delete_experiment_participation(request, id):
 
     ### get the experiment and participant  
 
-    #id = request.data['id']
-
     with connection.cursor() as cursor:
 
-        #try:
-        #result = cursor.execute("SELECT * FROM participant_experiment WHERE id = %s", [id])
-        #if result.fetchall():
-            print(f'delete id {id}')
             cursor.execute("DELETE FROM participant_experiment WHERE id = %s", [id])
 
-        #else:
-        #except:
-            #return Response(status=status.HTTP_404_NOT_FOUND)
         
     return Response(status=status.HTTP_200_OK)
 
@@ -202,14 +184,15 @@ def delete_experiment_participation(request, id):
 @api_view(['POST'])
 def add_participant(request):
 
-    print('add participant called')
-
     serializer = ParticipantSerializer(data = request.data)
 
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED)
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 # add experiment
@@ -220,7 +203,8 @@ def add_experiment(request):
 
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -234,7 +218,9 @@ def add_researcher(request):
 
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED)
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -246,22 +232,14 @@ def add_participation(request):
     ## get participant_id and experiment_id, assume they exist
     experiment_id = request.data['experiment_id']
     participant_id = request.data['participant_id']
-
-
-    ## attempt to get participant and experiment and create them if they exist
-    experiment = Experiment.objects.get(id = experiment_id)
-    participant = Participant.objects.get(id = participant_id)
-
     ## 
-
-
     serializer = ParticpantExperimentSerializer(data = request.data)
-
-
 
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED)
+
     
     print(serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -298,34 +276,17 @@ def get_experiments_with_date_and_researcher(request):
 
     has_researcher = (researcher_id == "")
 
-    #print('id: ' + str(has_researcher))
-    #has_researcher = (researcher_id == "10")
-
-    #print('id: ' + str(has_researcher))
-
 
     if not has_researcher:
-
-        print('has researcher')
-
         result_null = Experiment.objects.filter(end_date__isnull = True, start_date__gte=start_date, experimenter=researcher_id)
-
-
         result_no_null = Experiment.objects.filter(end_date__isnull = False, end_date__lte=end_date, 
                                                 start_date__gte=start_date, experimenter=researcher_id)
-
         results = result_null | result_no_null
     
     else:
-
-        print('no researcher')
-
         result_null = Experiment.objects.filter(end_date__isnull = True, start_date__gte=start_date)
-
-
         result_no_null = Experiment.objects.filter(end_date__isnull = False, end_date__lte=end_date, 
                                                 start_date__gte=start_date)
-
         results = result_null | result_no_null
 
     ### return the experiments
@@ -352,163 +313,20 @@ def get_report(request):
     ### get male and female participants statistic
 
     ids = []
-
     for p in participant_ids:
         ids.append(p.participant_id_id)
 
-
     males = Participant.objects.filter(id__in = ids).filter(sex = 'male')
     females = Participant.objects.filter(id__in = ids).filter(sex = 'female')
-
-    '''
-    males = []
-    females = []
-
-    with connection.cursor() as cursor:
-
-            males = cursor.execute("SELECT * FROM participants WHERE sex = %s", ['male'])
-            females = cursor.execute("SELECT * FROM participants WHERE sex = %s", ['female'])
-
-            print(males.fetchone())
-            print(females.fetchone())
-
-            males = males.fetchall()
-            females = females.fetchall()
-
-            test =cursor.execute("SELECT DISTINCT(sex) FROM participants")
-
-            print(test.fetchall())
-
-            print(males)
-            print(females)
-    '''
     male_count = len(males)
     female_count = len(females)
-    
 
-
-    ## adding to response
-    #augmented_serializer_data = list(serializer.data)
 
     augmented_serializer_data = {'participants': list(serializer.data)}
 
     augmented_serializer_data['statistics'] = ({'data_collection_count': len(data_collection_true), 'email_list_count': len(email_list_true),
                                       'data_and_email_count': len(data_and_email_true), 'male_count': male_count, 'female_count': female_count})
 
-
-
     return Response(augmented_serializer_data)
 
 
-
-
-
-'''
-can filter by the following
-
-1. experiment (say a list of all participants for this experiment) + data collection (say participant who agree to have data collected)
-2. participant  (say list all the experiments what a particular person has participated in) + data collection  (say participant who agree to have data collected)
-
-
-'''
-
-
-@api_view(['GET'])
-def filter_experiment(request, id, data_collection = None):
-
-    if data_collection == 'True' or data_collection == 'true':
-        data_collection = True
-        
-    elif data_collection == 'False' or data_collection == 'false':
-        data_collection = False
-
-    #experiment_id = request.data['experiment_id']
-    experiment_id = id
-
-    with connection.cursor() as cursor:
-
-
-        if data_collection:
-
-            participant_ids = cursor.execute("SELECT participant_id_id FROM participant_experiment WHERE experiment_id_id = %s AND data_collection = %s", [experiment_id, data_collection])
-
-
-            participant_ids = participant_ids.fetchall()
-
-            participant_ids_list = []
-
-            for tup in participant_ids:
-                participant_ids_list.append(tup[0])
-
-            results = Participant.objects.filter(id__in = participant_ids_list)
-        else:
-
-
-            participant_ids = cursor.execute("SELECT participant_id_id FROM participant_experiment WHERE experiment_id_id = %s", [experiment_id])
-
-            participant_ids = participant_ids.fetchall()
-
-            participant_ids_list = []
-
-            for tup in participant_ids:
-                participant_ids_list.append(tup[0])
-
-            results = Participant.objects.filter(id__in = participant_ids_list)
-
-        serializer = ParticipantSerializer(results, many = True)
-
-        print(serializer.data)
-
-        return Response(serializer.data)
-
-
-
-@api_view(['GET'])
-def filter_participant(request, id, data_collection = None):
-
-    if data_collection == 'True' or data_collection == 'true':
-        data_collection = True
-        
-    elif data_collection == 'False' or data_collection == 'false':
-        data_collection = False
-
-    #participant_id = request.data['participant_id']
-    participant_id = id
-
-    with connection.cursor() as cursor:
-
-
-        if data_collection:
-
-            experiment_ids = cursor.execute("SELECT experiment_id_id FROM participant_experiment WHERE participant_id_id = %s AND data_collection = %s", [participant_id, data_collection])
-
-
-            experiment_ids = experiment_ids.fetchall()
-
-            experiment_ids_list = []
-
-            for tup in experiment_ids:
-                experiment_ids_list.append(tup[0])
-
-            results = Experiment.objects.filter(id__in = experiment_ids_list)
-        else:
-
-
-            experiment_ids = cursor.execute("SELECT experiment_id_id FROM participant_experiment WHERE participant_id_id = %s", [participant_id])
-
-            experiment_ids = experiment_ids.fetchall()
-
-            experiment_ids_list = []
-
-            for tup in experiment_ids:
-                experiment_ids_list.append(tup[0])
-
-            results = Experiment.objects.filter(id__in = experiment_ids_list)
-
-        serializer = ExperimentSerializer(results, many = True)
-
-        print(serializer.data)
-
-        return Response(serializer.data)
-
-### end of report generation

@@ -18,6 +18,9 @@ class Participant(models.Model):
     
     class Meta:
         db_table = 'participants'
+        indexes = [
+            models.Index(fields=['id',])
+        ]
 
 
 
@@ -50,6 +53,9 @@ class Experiment(models.Model):
     
     class Meta:
         db_table = 'experiments'
+        indexes = [
+            models.Index(fields=['start_date', 'end_date'])
+        ]
 
 class ParticipantExperiment(models.Model):
 
@@ -72,4 +78,9 @@ class ParticipantExperiment(models.Model):
         db_table = 'participant_experiment'
         constraints = [
             models.UniqueConstraint(fields=['participant_id', 'experiment_id'], name='unique experiment participant')
+        ]
+
+        indexes = [
+            models.Index(fields=['id']),
+            models.Index(fields=['experiment_id'])
         ]
