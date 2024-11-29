@@ -9,13 +9,14 @@ urlpatterns = [
     path('participant_experiment/', views.get_participant_experiment),
 
     ## deleting 
-    path('participant_experiment/<int:id>/', views.delete_experiment_participation), 
+    path('participant_experiment/<int:id>', views.delete_experiment_participation), 
 
 
-    ## methods to edit researcher/experiments/participants
+    ## methods to edit researcher/experiments/participants/participation
     path('researcher/<int:id>', views.edit_researcher),
     path('experiment/<int:id>', views.edit_experiment),
     path('participant/<int:id>', views.edit_participant),
+    path('participation/<int:id>', views.edit_participation),
 
     ## creating researcher/experiment/participant/expriment participation
     path('researcher/', views.add_researcher),
@@ -28,5 +29,7 @@ urlpatterns = [
     path('filter_experiment/<int:id>/<data_collection>/', views.filter_experiment),
     path('filter_experiment/<int:id>/', views.filter_experiment),
     path('filter_participant/<int:id>/<data_collection>/', views.filter_participant),
-    path('filter_participant/<int:id>/', views.filter_participant)
+    path('filter_participant/<int:id>/', views.filter_participant),
+    path('filter_by_date_researcher/', views.get_experiments_with_date_and_researcher),
+    path('get_report/', views.get_report)
 ]

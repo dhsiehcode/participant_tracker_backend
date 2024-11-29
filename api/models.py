@@ -7,7 +7,7 @@ class Participant(models.Model):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     dob = models.DateField("date of birth")
-    sex = models.CharField(max_length=10)
+    sex = models.CharField(max_length=10) ## expects lowercase from frontend
     occupation = models.CharField(max_length=20)
     email = models.EmailField(max_length=50)
     email_list = models.BooleanField(default=False, verbose_name="agreed to be on email list")

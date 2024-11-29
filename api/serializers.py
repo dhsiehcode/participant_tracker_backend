@@ -2,7 +2,11 @@ from rest_framework import serializers
 from .models import Participant, Experiment, ParticipantExperiment, Researcher
 
 
-class ParticipantSeriaizer(serializers.ModelSerializer):
+
+
+
+
+class ParticipantSerializer(serializers.ModelSerializer):
 
     class Meta:
 
@@ -33,4 +37,35 @@ class ResearcherSeializer(serializers.ModelSerializer):
     class Meta:
         model = Researcher
         fields = ('id', 'first_name', 'last_name', 'start_date', 'end_date')
+
+
+class DataCollectionCountField(serializers.RelatedField):
+
+    def to_representation(self, data_collection_count):
+        return '%d' % data_collection_count
+
+
+class ContactCountField(serializers.RelatedField):
+
+    def to_representation(self, contact_count):
+        return '%d' % contact_count
+
+
+class NamedParticipantExperimentSerializer(serializers.ModelSerializer):
+
+    participant_id = ParticipantSerializer()
+    experiment_id = ExperimentSerializer()
+
+    class Meta:
+        model = ParticipantExperiment
+        fields = ('id', 'participant_id', 'experiment_id', 'collect_data', 'experiment_date', 'location')
+        #fields = ('id', 'participant_id', 'experiment_id', 'collect_data', 'experiment_date', 'location', 'participant', 'experiment')
+
+
+
+        
+
+
+
+
 
