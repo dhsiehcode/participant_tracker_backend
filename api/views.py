@@ -110,7 +110,8 @@ def edit_participation(request, id):
             cursor.execute("UPDATE participant_experiment SET collect_data = %s, experiment_date = %s, location = %s WHERE id = %s", 
                            [collect_data, experiment_date, location, id])
 
-    except:
+    except Exception as e:
+        print(e)
         return Response(status=status.HTTP_304_NOT_MODIFIED)
     return Response(status=status.HTTP_200_OK)
 
