@@ -95,9 +95,9 @@ def edit_participation(request, id):
             collect_data = participation.collect_data
         else:
             if collect_data == 'True' or collect_data == 'true':
-                collect_data = 1
+                collect_data = True
             else:
-                collect_data = 0
+                collect_data = False
 
         if experiment_date == '':
             experiment_date = participation.experiment_date
