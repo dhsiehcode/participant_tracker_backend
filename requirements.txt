@@ -11,6 +11,7 @@ charset-normalizer==3.4.0
 colorama==0.4.6
 distro==1.9.0
 Django==5.1
+dj-database-url==2.3.0
 django-cors-headers==4.4.0
 django-rest-framework==0.1.0
 djangorestframework==3.15.2
