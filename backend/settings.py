@@ -74,8 +74,10 @@ TEMPLATES = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
+    "*",
     'http://localhost:3000',
-    'https://participant-tracker-frontend.vercel.app'
+    'https://participant-tracker-frontend.vercel.app',
+    'https://participant-tracker-frontend-6xvur6ceu.vercel.app/'
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
