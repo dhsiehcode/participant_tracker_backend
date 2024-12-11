@@ -79,6 +79,10 @@ CORS_ALLOWED_ORIGINS = [
     'https://participant-tracker-frontend-6xvur6ceu.vercel.app'
 ]
 
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    '.*vercel\.app.*'
+]
+
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 
