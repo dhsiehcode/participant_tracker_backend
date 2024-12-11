@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-e4i!_nb$dk4k_@xq@z0#$gux&!gwojv10*%tv9$%+vt@l412x#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*", "localhost"]
+ALLOWED_HOSTS = [".vercel.app", "localhost"]
 
 
 # Application definition
@@ -74,6 +74,7 @@ TEMPLATES = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    '*'
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
@@ -83,10 +84,17 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    #'default': {
+    #    'ENGINE': 'django.db.backends.sqlite3',
+    #    'NAME': BASE_DIR / 'db.sqlite3',
+    #}
+
+    #"default": {
+    #    "ENGINE": "django.db.backends.postgresql",
+    #    "NAME": 'db',
+    #    "USER": 'user',
+    #    "PASSWORD": '12345678',
+    #}
 }
 
 
