@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-e4i!_nb$dk4k_@xq@z0#$gux&!gwojv10*%tv9$%+vt@l412x#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [".vercel.app", "localhost"]
+ALLOWED_HOSTS = [".vercel.app", "localhost", "participant-tracker-backend.onrender.com"]
 
 
 # Application definition
@@ -75,6 +75,7 @@ TEMPLATES = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    ".vercel.app"
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
@@ -96,6 +97,8 @@ DATABASES = {
     #    "PASSWORD": '12345678',
     #}
 }
+
+
 
 DATABASES["default"] = dj_database_url.parse("postgresql://participant_tracker_user:P5pCJG3rOm47DH6m4wCJdtn0WaCFfyDI@dpg-ctcscflumphs73b7pjeg-a.oregon-postgres.render.com/participant_tracker")
 
